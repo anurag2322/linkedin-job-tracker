@@ -34,10 +34,7 @@ cd job-tracker
 ```
 
 ### 2. Backend Setup (FastAPI + MongoDB)
-1. Start MongoDB locally:
-   ```bash
-   mongod --dbpath /usr/local/var/mongodb
-   ```
+1. Create cluster on MongoDB and replace path in .env file
 2. Install dependencies:
    ```bash
    pip install -r requirements.txt
