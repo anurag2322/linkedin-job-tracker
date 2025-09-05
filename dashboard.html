@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Tracker Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        .jobs-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .filter-select {
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .search-box {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .jobs-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .job-card {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.3s ease;
+        }
+
+        .job-card:hover {
+            background-color: #f8f9fa;
+        }
+
+        .job-card:last-child {
+            border-bottom: none;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.25rem;
+        }
+
+        .job-company {
+            color: #6c757d;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .job-platform {
+            background: #007bff;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .job-date {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        .job-status {
+            padding: 0.375rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-saved { background: #e3f2fd; color: #1976d2; }
+        .status-applied { background: #e8f5e8; color: #388e3c; }
+        .status-interview { background: #fff3e0; color: #f57c00; }
+        .status-rejected { background: #ffebee; color: #d32f2f; }
+
+        .job-notes {
+            color: #495057;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .job-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .widget {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+        }
+
+        .widget h3 {
+            margin-bottom: 1rem;
+            color: #495057;
+            font-size: 1.25rem;
+        }
+
+        .platform-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .platform-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .platform-bar {
+            flex: 1;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+
+        .platform-progress {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .error {
+            text-align: center;
+            padding: 2rem;
+            color: #dc3545;
+            background: #ffebee;
+            border-radius: 6px;
+            margin: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>🎯 Job Tracker Dashboard</h1>
+            <p>Manage and track your job applications</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="total-jobs">-</div>
+                <div class="stat-label">Total Jobs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="applied-jobs">-</div>
+                <div class="stat-label">Applied</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="interview-jobs">-</div>
+                <div class="stat-label">Interviews</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="saved-jobs">-</div>
+                <div class="stat-label">Saved</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="jobs-section">
+                <div class="section-header">
+                    <h2>Your Jobs</h2>
+                    <button class="btn btn-primary" onclick="refreshJobs()">🔄 Refresh</button>
+                </div>
+                
+                <div class="filters">
+                    <select class="filter-select" id="status-filter" onchange="filterJobs()">
+                        <option value="">All Status</option>
+                        <option value="saved">Saved</option>
+                        <option value="applied">Applied</option>
+                        <option value="interview">Interview</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                    
+                    <select class="filter-select" id="platform-filter" onchange="filterJobs()">
+                        <option value="">All Platforms</option>
+                        <option value="LinkedIn">LinkedIn</option>
+                        <option value="Indeed">Indeed</option>
+                        <option value="Naukri">Naukri</option>
+                    </select>
+                    
+                    <input type="text" class="search-box" id="search-box" placeholder="Search jobs..." 
+                           oninput="searchJobs(this.value)">
+                </div>
+                
+                <div class="jobs-list" id="jobs-list">
+                    <div class="loading">Loading jobs...</div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="widget">
+                    <h3>Platform Stats</h3>
+                    <div class="platform-stats" id="platform-stats">
+                        <div class="loading" style="padding: 1rem;">Loading...</div>
+                    </div>
+                </div>
+                
+                <div class="widget">
+                    <h3>Quick Actions</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <button class="btn btn-primary" onclick="exportJobs()">📊 Export Data</button>
+                        <button class="btn btn-secondary" onclick="clearAllJobs()">🗑️ Clear All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class JobDashboard {
+            constructor() {
+                this.apiBase = 'http://localhost:8000/api';
+                this.jobs = [];
+                this.filteredJobs = [];
+                this.init();
+            }
+
+            async init() {
+                await this.loadJobs();
+                await this.loadStats();
+            }
+
+            async loadJobs() {
+                try {
+                    const response = await fetch(`${this.apiBase}/jobs/`);
+                    if (!response.ok) throw new Error('Failed to fetch jobs');
+                    
+                    this.jobs = await response.json();
+                    this.filteredJobs = [...this.jobs];
+                    this.renderJobs();
+                } catch (error) {
+                    this.showError('Failed to load jobs. Make sure the backend is running.');
+                }
+            }
+
+            async loadStats() {
+                try {
+                    const response = await fetch(`${this.apiBase}/jobs/stats/summary`);
+                    if (!response.ok) throw new Error('Failed to fetch stats');
+                    
+                    const stats = await response.json();
+                    this.updateStatsDisplay(stats);
+                    this.updatePlatformStats(stats.platforms);
+                } catch (error) {
+                    console.error('Failed to load stats:', error);
+                }
+            }
+
+            updateStatsDisplay(stats) {
+                document.getElementById('total-jobs').textContent = stats.total_jobs || 0;
+                document.getElementById('applied-jobs').textContent = stats.status_breakdown.applied || 0;
+                document.getElementById('interview-jobs').textContent = stats.status_breakdown.interview || 0;
+                document.getElementById('saved-jobs').textContent = stats.status_breakdown.saved || 0;
+            }
+
+            updatePlatformStats(platforms) {
+                const container = document.getElementById('platform-stats');
+                const total = Object.values(platforms).reduce((sum, count) => sum + count, 0);
+                
+                if (total === 0) {
+                    container.innerHTML = '<div class="empty-state" style="padding: 1rem;">No data yet</div>';
+                    return;
+                }
+
+                container.innerHTML = Object.entries(platforms).map(([platform, count]) => {
+                    const percentage = (count / total) * 100;
+                    return `
+                        <div class="platform-item">
+                            <span>${platform}</span>
+                            <div class="platform-bar">
+                                <div class="platform-progress" style="width: ${percentage}%"></div>
+                            </div>
+                            <span>${count}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            renderJobs() {
+                const container = document.getElementById('jobs-list');
+                
+                if (this.filteredJobs.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>No jobs found</h3>
+                            <p>Start saving jobs from LinkedIn, Indeed, or Naukri!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = this.filteredJobs.map(job => `
+                    <div class="job-card">
+                        <div class="job-header">
+                            <div style="flex: 1;">
+                                <div class="job-title">${job.title}</div>
+                                <div class="job-company">${job.company}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="job-meta">
+                            <span class="job-platform">${job.platform}</span>
+                            <span class="job-status status-${job.status}">${job.status}</span>
+                            <span class="job-date">${this.formatDate(job.date_saved)}</span>
+                        </div>
+                        
+                        ${job.notes ? `<div class="job-notes">"${job.notes}"</div>` : ''}
+                        
+                        <div class="job-actions">
+                            <a href="${job.url}" target="_blank" class="btn btn-primary">🔗 View Job</a>
+                            <button class="btn btn-secondary" onclick="dashboard.editJob('${job.id}')">✏️ Edit</button>
+                            <button class="btn btn-danger" onclick="dashboard.deleteJob('${job.id}')">🗑️ Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            filterJobs() {
+                const statusFilter = document.getElementById('status-filter').value;
+                const platformFilter = document.getElementById('platform-filter').value;
+                
+                this.filteredJobs = this.jobs.filter(job => {
+                    const matchesStatus = !statusFilter || job.status === statusFilter;
+                    const matchesPlatform = !platformFilter || job.platform === platformFilter;
+                    return matchesStatus && matchesPlatform;
+                });
+                
+                this.renderJobs();
+            }
+
+            searchJobs(query) {
+                if (!query.trim()) {
+                    this.filteredJobs = [...this.jobs];
+                } else {
+                    const searchTerm = query.toLowerCase();
+                    this.filteredJobs = this.jobs.filter(job => 
+                        job.title.toLowerCase().includes(searchTerm) ||
+                        job.company.toLowerCase().includes(searchTerm)
+                    );
+                }
+                this.renderJobs();
+            }
+
+            async deleteJob(jobId) {
+                if (!confirm('Are you sure you want to delete this job?')) return;
+                
+                try {
+                    const response = await fetch(`${this.apiBase}/jobs/${jobId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        await this.loadJobs();
+                        await this.loadStats();
+                    } else {
+                        throw new Error('Failed to delete job');
+                    }
+                } catch (error) {
+                    alert('Error deleting job: ' + error.message);
+                }
+            }
+
+            async editJob(jobId) {
+                const job = this.jobs.find(j => j.id === jobId);
+                if (!job) return;
+                
+                const newStatus = prompt('Enter new status (saved/applied/interview/rejected):', job.status);
+                if (!newStatus || newStatus === job.status) return;
+                
+                const newNotes = prompt('Enter notes:', job.notes || '');
+                
+                try {
+                    const response = await fetch(`${this.apiBase}/jobs/${jobId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: newStatus, notes: newNotes })
+                    });
+                    
+                    if (response.ok) {
+                        await this.loadJobs();
+                        await this.loadStats();
+                    } else {
+                        throw new Error('Failed to update job');
+                    }
+                } catch (error) {
+                    alert('Error updating job: ' + error.message);
+                }
+            }
+
+            formatDate(dateString) {
+                return new Date(dateString).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+
+            showError(message) {
+                document.getElementById('jobs-list').innerHTML = `
+                    <div class="error">${message}</div>
+                `;
+            }
+
+            async exportJobs() {
+                try {
+                    const dataStr = JSON.stringify(this.jobs, null, 2);
+                    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                    
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(dataBlob);
+                    link.download = `job-tracker-export-${new Date().toISOString().split('T')[0]}.json`;
+                    link.click();
+                } catch (error) {
+                    alert('Error exporting data: ' + error.message);
+                }
+            }
+
+            async clearAllJobs() {
+                if (!confirm('Are you sure you want to delete ALL jobs? This cannot be undone!')) return;
+                
+                try {
+                    for (const job of this.jobs) {
+                        await fetch(`${this.apiBase}/jobs/${job.id}`, { method: 'DELETE' });
+                    }
+                    
+                    await this.loadJobs();
+                    await this.loadStats();
+                } catch (error) {
+                    alert('Error clearing jobs: ' + error.message);
+                }
+            }
+        }
+
+// Global functions to connect UI to class
+document.addEventListener("DOMContentLoaded", () => {
+  dashboard = new JobDashboard();
+});
+
+function refreshJobs() {
+  dashboard.loadJobs();
+  dashboard.loadStats();
+}
+
+function filterJobs() {
+  dashboard.filterJobs();
+}
+
+function searchJobs(query) {
+  dashboard.searchJobs(query);
+}
+
+function exportJobs() {
+  dashboard.exportJobs();
+}
+
+function clearAllJobs() {
+  dashboard.clearAllJobs();
+}
+
+</script>
+</body></html>

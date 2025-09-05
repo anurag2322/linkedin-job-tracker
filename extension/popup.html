@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 400px;
+      min-height: 500px;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .quick-save {
+      padding: 20px;
+      background: white;
+      margin: 1px;
+    }
+
+    .quick-save h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 16px;
+    }
+
+    .job-info {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      border: 1px solid #e9ecef;
+    }
+
+    .job-title {
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 4px;
+    }
+
+    .job-company {
+      color: #6c757d;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .job-platform {
+      background: #007bff;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      display: inline-block;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #495057;
+    }
+
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-group textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .dashboard-section {
+      padding: 20px;
+      background: white;
+      margin: 1px;
+    }
+
+    .job-list {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .job-item {
+      padding: 10px;
+      border-bottom: 1px solid #e9ecef;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .job-item:last-child {
+      border-bottom: none;
+    }
+
+    .job-summary {
+      flex: 1;
+    }
+
+    .job-summary .title {
+      font-weight: 500;
+      color: #495057;
+      font-size: 14px;
+    }
+
+    .job-summary .company {
+      color: #6c757d;
+      font-size: 12px;
+    }
+
+    .job-status {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .status-saved { background: #e3f2fd; color: #1976d2; }
+    .status-applied { background: #e8f5e8; color: #388e3c; }
+    .status-interview { background: #fff3e0; color: #f57c00; }
+    .status-rejected { background: #ffebee; color: #d32f2f; }
+
+    .error-message {
+      background: #ffebee;
+      color: #d32f2f;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+
+    .success-message {
+      background: #e8f5e8;
+      color: #388e3c;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #6c757d;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 20px;
+      color: #6c757d;
+    }
+
+    .tab-buttons {
+      display: flex;
+      background: white;
+      margin: 1px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 15px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn.active {
+      border-bottom-color: #667eea;
+      color: #667eea;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🎯 Job Tracker</h1>
+  </div>
+
+  <div class="tab-buttons">
+    <button class="tab-btn active" data-tab="save">Quick Save</button>
+    <button class="tab-btn" data-tab="dashboard">Dashboard</button>
+  </div>
+
+  <div id="save-tab" class="tab-content active">
+    <div class="quick-save">
+      <h3>Current Job</h3>
+      <div id="current-job-info" class="loading">
+        Loading job information...
+      </div>
+      
+      <div id="save-form" style="display: none;">
+        <div class="form-group">
+          <label for="status">Application Status</label>
+          <select id="status">
+            <option value="saved">Saved</option>
+            <option value="applied">Applied</option>
+            <option value="interview">Interview</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="notes">Notes</label>
+          <textarea id="notes" placeholder="Add your notes about this job..."></textarea>
+        </div>
+        
+        <button id="save-btn" class="btn">💾 Save Job</button>
+      </div>
+      
+      <div id="message-area"></div>
+    </div>
+  </div>
+
+  <div id="dashboard-tab" class="tab-content">
+    <div class="dashboard-section">
+      <h3>Saved Jobs</h3>
+      <div id="jobs-list" class="loading">
+        Loading your jobs...
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js">
+  </script>
+</body>
+</html>
