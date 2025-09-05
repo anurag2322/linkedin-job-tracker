@@ -1,68 +1,64 @@
-LinkedIn Job Tracker
+# LinkedIn Job Tracker
 
-A full-stack application to save and manage job applications from LinkedIn. The system consists of a Chrome Extension for seamless job capture and a FastAPI + MongoDB backend with a web dashboard for tracking and analyzing applications.
+A full-stack application to save and manage job applications from **LinkedIn**. The system consists of a **Chrome Extension** for seamless job capture and a **FastAPI + MongoDB backend** with a web dashboard for tracking and analyzing applications.
 
-✨ Features
+---
 
-📌 Chrome Extension (Manifest V3) to capture job postings directly from LinkedIn.
+## ✨ Features
 
-⚡ FastAPI backend with REST APIs for storing, updating, and querying job applications.
+- 📌 **Chrome Extension** (Manifest V3) to capture job postings directly from LinkedIn.
+- ⚡ **FastAPI backend** with **REST APIs** for storing, updating, and querying job applications.
+- 🗄️ **MongoDB database** with async queries using Motor driver.
+- 📊 **Web dashboard** to view, search, filter, and analyze saved applications.
+- 🔄 **Real-time updates**: job deduplication, validation, and status management.
+- ✅ Robust data extraction using **JSON-LD parsing** with DOM fallback.
 
-🗄️ MongoDB database with async queries using Motor driver.
+---
 
-📊 Web dashboard to view, search, filter, and analyze saved applications.
+## 🛠️ Tools & Technologies
 
-🔄 Real-time updates: job deduplication, validation, and status management.
+- **Languages**: Python, JavaScript (ES6), HTML, CSS
+- **Backend**: FastAPI, Pydantic, Uvicorn, Motor (MongoDB async driver)
+- **Database**: MongoDB
+- **Frontend/Dashboard**: HTML, CSS, JavaScript
+- **Platform**: Chrome Extension (Manifest V3), Browser APIs
 
-✅ Robust data extraction using JSON-LD parsing with DOM fallback.
+---
 
-🛠️ Tools & Technologies
+## 🚀 Getting Started
 
-Languages: Python, JavaScript (ES6), HTML, CSS
-
-Backend: FastAPI, Pydantic, Uvicorn, Motor (MongoDB async driver)
-
-Database: MongoDB
-
-Frontend/Dashboard: HTML, CSS, JavaScript
-
-Platform: Chrome Extension (Manifest V3), Browser APIs
-
-🚀 Getting Started
-1. Clone the repository
+### 1. Clone the repository
+```bash
 git clone https://github.com/your-username/job-tracker.git
 cd job-tracker
+```
 
-2. Backend Setup (FastAPI + MongoDB)
+### 2. Backend Setup (FastAPI + MongoDB)
+1. Start MongoDB locally:
+   ```bash
+   mongod --dbpath /usr/local/var/mongodb
+   ```
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Run FastAPI server:
+   ```bash
+   uvicorn main:app --reload
+   ```
+4. Visit API docs at: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-Start MongoDB locally:
+### 3. Chrome Extension Setup
+1. Open **Chrome → Extensions → Manage Extensions**.
+2. Enable **Developer Mode**.
+3. Click **Load unpacked** and select the `extension/` folder.
+4. Pin the extension to the toolbar.
 
-mongod --dbpath /usr/local/var/mongodb
+---
 
+## 📂 Project Structure
 
-Install dependencies:
-
-pip install -r requirements.txt
-
-
-Run FastAPI server:
-
-uvicorn main:app --reload
-
-
-Visit API docs at: http://localhost:8000/docs
-
-3. Chrome Extension Setup
-
-Open Chrome → Extensions → Manage Extensions.
-
-Enable Developer Mode.
-
-Click Load unpacked and select the extension/ folder.
-
-Pin the extension to the toolbar.
-
-📂 Project Structure
+```
 job-tracker/
 │── backend/
 │   ├── main.py           # FastAPI app & routes
@@ -78,21 +74,27 @@ job-tracker/
 │
 │── dashboard.html        # Web dashboard UI
 │── README.md             # Project documentation
+```
 
-📊 Dashboard Preview
+---
 
-Search and filter saved jobs
+## 📊 Dashboard Preview
 
-Track application status
+- Search and filter saved jobs
+- Track application status
+- View summary statistics (by status and platform)
 
-View summary statistics (by status and platform)
+---
 
-🔮 Future Enhancements
+## 🔮 Future Enhancements
 
- Support for Naukri and Indeed job postings
+- [ ] Support for **Naukri** and **Indeed** job postings
+- [ ] Export saved jobs as CSV/Excel
+- [ ] Deploy backend with **MongoDB Atlas** + cloud hosting
+- [ ] Add authentication for secure job tracking
 
- Add authentication for secure job tracking
+---
 
-📜 License
+## 📜 License
 
 This project is licensed under the MIT License.
